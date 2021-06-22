@@ -30,13 +30,14 @@ class Client
     /**
      * @param @options
      */
-    public function __construct($options = [])
+    public function __construct($options = [], $chainId = 0)
     {
         $defaultOptions = [
             'base_uri' => 'http://127.0.0.1:8545',
             'timeout' => 10,
             'verify' => false,
         ];
+        $this->chainId = $chainId;
         if (is_string($options)) {
             $this->client = new GuzzleHttp(array_merge($defaultOptions, ['base_uri' => $options]));
         } else {
@@ -113,7 +114,7 @@ class Client
             'value' => '',
             'data' => '',
         ], $transaction);
-        
+
         // EIP-155
         if ($chainId > 0) {
             $transaction['v']=$chainId;
@@ -225,7 +226,6 @@ class Client
      */
     public function getChainId()
     {
-        return 0;
         if ($this->chainId === null) {
             $this->chainId = $this->net_version();
         }
