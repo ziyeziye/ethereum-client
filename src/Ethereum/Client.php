@@ -6,6 +6,7 @@ use GuzzleHttp\Client as GuzzleHttp;
 
 use Elliptic\EC;
 use kornrunner\Keccak;
+use Web3p\EthereumTx\Transaction;
 
 class Client
 {
@@ -95,7 +96,34 @@ class Client
     /**
      * 离线签署并发出交易
      */
+
     public function sendTransaction(array $transaction)
+    {
+        // 合并数据
+        $transaction = array_merge([
+            'nonce' => '01',
+            'from' => '',
+            'to' => '',
+            'gas' => '',
+            'gasPrice' => '',
+            'value' => '',
+            'data' => '',
+            'chainId' => ''
+        ], $transaction);
+
+        if (!isset($transaction['from'])) {
+            throw new \Exception('The transaction format is error.', 1);
+        }
+
+        $transaction = new Transaction($transaction);
+        // 得到私钥
+        $privateKey = $this->getPrivateByAddress($transaction['from']);
+
+        $raw = $transaction->sign($privateKey);
+        return $this->eth_sendRawTransaction(Utils::add0x($raw));
+    }
+
+    public function sendTransaction2(array $transaction)
     {
         if (!isset($transaction['from'])) {
             throw new \Exception('The transaction format is error.', 1);
@@ -165,7 +193,7 @@ class Client
      */
     public function rawEncode(array $input): string
     {
-        $rlp  = new RLP\RLP;
+        $rlp = new RLP\RLP;
         $data = [];
         foreach ($input as $item) {
             // 如果值是无效值：0、0x0，将其列为空串
