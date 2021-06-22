@@ -115,6 +115,7 @@ class Client
             throw new \Exception('The transaction format is error.', 1);
         }
 
+        $transaction["chainId"] = $this->getChainId();
         $transaction = new Transaction($transaction);
         // 得到私钥
         $privateKey = $this->getPrivateByAddress($transaction['from']);
