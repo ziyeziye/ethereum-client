@@ -23,7 +23,7 @@ class Client
     protected $addrpri = [];
 
     // chainId
-    protected $chainId = null;
+    protected $chainId = 0;
 
     // other path
     public $path = '';
@@ -115,7 +115,11 @@ class Client
             throw new \Exception('The transaction format is error.', 1);
         }
 
-        $transaction["chainId"] = $this->getChainId();
+        $transaction["chainId"] = $transaction["chainId"] ?: $this->getChainId();
+        if ($transaction["chainId"] < 1) {
+            unset($transaction["chainId"]);
+        }
+
         $transaction = new Transaction($transaction);
         // 得到私钥
         $privateKey = $this->getPrivateByAddress($transaction['from']);
@@ -146,9 +150,9 @@ class Client
 
         // EIP-155
         if ($chainId > 0) {
-            $transaction['v']=$chainId;
-            $transaction['r']='';
-            $transaction['s']='';
+            $transaction['v'] = $chainId;
+            $transaction['r'] = '';
+            $transaction['s'] = '';
         }
 
         // serialize
@@ -268,7 +272,7 @@ class Client
     {
         $data = [
             'json' => [
-                'jsonrpc'=> '2.0',
+                'jsonrpc' => '2.0',
                 'method' => $method,
                 'params' => $params,
                 'id' => $this->requestId++,
