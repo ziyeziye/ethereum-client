@@ -8,18 +8,22 @@ PHP版的以太坊RPC客户端，支持离线交易、生成私钥与地址。�
 这样不仅高效率且安全（如果你执意要使用服务器来运行以太坊客户端，这个项目也支持）。
 
 # 安装
+如果安装过myxtype/ethereum-client
+请先   
+`composer remove myxtype/ethereum-client`   
+   
 composer.json
 ```
 {
     "require": {
-        "myxtype/ethereum-client": "dev-master"
+        "ziyeziye/ethereum-client": "dev-master"
     }
 }
 ```
 
 然后`composer update`即可。
 
-> 或者直接 `composer require myxtype/ethereum-client:dev-master`
+> 或者直接 `composer require ziyeziye/ethereum-client:dev-master`
 
 # 使用
 详细使用请参考`examples`文件夹
